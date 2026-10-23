@@ -20,7 +20,7 @@ function App() {
                 <form onSubmit={(e) => {
                     e.preventDefault();
                     // name 값을 cart에다가 추가
-                    setCart([...cart, { pName: name, quantity: 1 } ]);
+                    setCart([...cart, {pName: name, quantity: 1}]);
                     setName("")
                 }}>
                     <input type={"text"}
@@ -51,12 +51,37 @@ function App() {
                 <tbody>
                 {cart.map((item, index) => <tr key={index}>
                     <td>{item.pName}</td>
-                    <td>수량 변경</td>
+                    <td>
+                        <button onClick={ () => {
+                            // 지금 현재 수량이 1 이하면, 실행하지 않게끔
+                            if (item.quantity <= 1){
+                                return;
+                            }
+                            const newCart = [...cart];
+                            newCart[index].quantity -= 1;
+                            setCart(newCart);
+                        }}>-</button>
+                        {item.quantity}
+                        <button onClick={() => {
+                            // cart의 정보 중, index 자리에 있는 요소의 quantity값을 +1
+                            // cart[index].quantity += 1;   => 이렇게 쓰면 안 됨 / React가 바꾼 걸 모름
+                            //                              => state의 값을 바꿀 땐, set을 써야 함
+
+                            // 1. react가 알아채게끔 하려면, 새 배열을 cart에 넣어야 함 => 새 배열을 만들고
+                            // 2. 값을 바꾸고
+                            // 3. 그렇게 만들어진 배열을 setCart에 넣게 단계별로 진행하는 게 이해하기 쉽고 편함
+                            const newCart = [...cart];
+                            newCart[index].quantity += 1;
+                            setCart(newCart);
+                        }}>+
+                        </button>
+                    </td>
                     <td>
                         <button onClick={() => {
                             const result = cart.filter((v, i) => i !== index);
                             setCart(result);
-                        } }>❌ 삭제</button>
+                        }}>❌ 삭제
+                        </button>
                     </td>
                 </tr>)}
                 </tbody>
