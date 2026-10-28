@@ -1,19 +1,20 @@
-import {useState} from "react";
+import { useState } from "react";
+import styles from "./App.module.css";
 
 function App() {
-    const [name, setName] = useState("");   // input 관리용
-    const [cart, setCart] = useState([]);   // 목록 관리용
+    const [name, setName] = useState(""); // input 관리용
+    const [cart, setCart] = useState([]); // 목록 관리용
 
-    const handleSubmit = (e) => {
+    const handleSubmit = e => {
         e.preventDefault();
         if (name === "" || name === " ") {
             return;
         }
-        setCart([...cart, {pName: name, quantity: 1}]);
-        setName("")
+        setCart([...cart, { pName: name, quantity: 1 }]);
+        setName("");
     };
 
-    const handleChange = (e) => {
+    const handleChange = e => {
         setName(e.target.value);
     };
 
@@ -40,7 +41,7 @@ function App() {
         setCart(newCart);
     };
 
-    const handleDeleteButton = (index) => {
+    const handleDeleteButton = index => {
         const result = cart.filter((v, i) => i !== index);
         setCart(result);
     };
@@ -48,53 +49,90 @@ function App() {
     // react는 state의 값이 변하는지를 감시하고 있기에
     // 값이 변하여 재계산을 하는 'react에서의 리렌더링 => 재계산을 하여 브라우저에 코드를 제공하는 일'이라는 과정에 포함됨
     const totalQuantity = cart.reduce((sum, item) => {
-        return item.quantity + sum
-    }, 0)
+        return item.quantity + sum;
+    }, 0);
 
     return (
-        <>
-            <h2>Simple Shop</h2>
-            <fieldset>
-                <legend>상품 추가</legend>
-                <form onSubmit={handleSubmit}>
-                    <input type={"text"}
-                           placeholder={"상품명을 입력하세요"}
-                           value={name}
-                           onChange={handleChange}/>
-                    <button type={"submit"}>카트에 담기</button>
+        <div className={styles.container}>
+            <h2 className={styles.title}>Simple Shop</h2>
+            <fieldset className={styles.fieldset}>
+                <legend className={styles.legend}>상품 추가</legend>
+                <form className={styles.form} onSubmit={handleSubmit}>
+                    <input
+                        className={styles.input}
+                        type={"text"}
+                        placeholder={"상품명을 입력하세요"}
+                        value={name}
+                        onChange={handleChange}
+                    />
+                    <button className={styles.submitButton} type={"submit"}>
+                        카트에 담기
+                    </button>
                 </form>
             </fieldset>
-            <table border={1}
-                   cellPadding={10}
-                   style={{
-                       width: "100%",
-                       borderCollapse: "collapse",
-                   }}>
-                <thead style={{backgroundColor: "#f2f2f2"}}>
-                <tr>
-                    <td>상품명</td>
-                    <td>수량 제어</td>
-                    <td>관리</td>
-                </tr>
-                </thead>
-                <tbody>
-                {cart.map((item, index) => <tr key={index}>
-                    <td>{item.pName}</td>
-                    <td>
-                        <button onClick={() => {handleUpdateQuantity(index, -10)}}>-10</button>
-                        <button onClick={() => {handleUpdateQuantity(index, -1)}}>-</button>
-                        {item.quantity}
-                        <button onClick={() => {handleUpdateQuantity(index, +1);}}>+</button>
-                        <button onClick={() => {handleUpdateQuantity(index, +10);}}>+10</button>
-                    </td>
-                    <td>
-                        <button onClick={() => handleDeleteButton(index)}>❌ 삭제</button>
-                    </td>
-                </tr>)}
-                </tbody>
-            </table>
-            <h3>총 품목 : {cart.length}개 / 총 수량 : {totalQuantity}개</h3>
-        </>
+            <div className={styles.tableWrapper}>
+                <table className={styles.table}>
+                    <thead>
+                        <tr>
+                            <td>상품명</td>
+                            <td>수량 제어</td>
+                            <td>관리</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {cart.map((item, index) => (
+                            <tr key={index}>
+                                <td>{item.pName}</td>
+                                <td>
+                                    <div className={styles.quantityGroup}>
+                                        <button
+                                            className={styles.qtyButton}
+                                            onClick={() => {
+                                                handleUpdateQuantity(index, -10);
+                                            }}>
+                                            -10
+                                        </button>
+                                        <button
+                                            className={styles.qtyButton}
+                                            onClick={() => {
+                                                handleUpdateQuantity(index, -1);
+                                            }}>
+                                            -
+                                        </button>
+                                        <span className={styles.quantityText}>{item.quantity}</span>
+                                        <button
+                                            className={styles.qtyButton}
+                                            onClick={() => {
+                                                handleUpdateQuantity(index, +1);
+                                            }}>
+                                            +
+                                        </button>
+                                        <button
+                                            className={styles.qtyButton}
+                                            onClick={() => {
+                                                handleUpdateQuantity(index, +10);
+                                            }}>
+                                            +10
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <button
+                                        className={styles.deleteButton}
+                                        onClick={() => handleDeleteButton(index)}>
+                                        ❌ 삭제
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <h3 className={styles.summary}>
+                총 품목 : {cart.length}개 / 총 수량 : {totalQuantity}개
+            </h3>
+        </div>
     );
 }
 
